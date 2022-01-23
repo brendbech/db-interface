@@ -1,0 +1,15 @@
+.box {
+  padding: 10px 20px;
+  max-width: 200px;
+  border-radius: 10px;
+}
+
+.dbBox {
+  background-color: #8fbc8f;
+  border: 2px solid #5c7a5c;
+}
+
+.tblBox {
+  background-color: #4790da;
+  border: 2px solid #2d5884;
+}
