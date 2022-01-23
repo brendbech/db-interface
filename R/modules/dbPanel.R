@@ -13,7 +13,8 @@ dbPanel <- function(id, ui = NULL){
         boxes = list(
           db = list(),
           tbl = list()
-        )
+        ),
+        modules = list()
       )
       
       output$container <- renderUI({
@@ -24,29 +25,54 @@ dbPanel <- function(id, ui = NULL){
       })
       
       observeEvent(ui$address, {
-        need(!is.null(ui$address), "address cannot be NULL")
-        need(file.exists(paste0(getwd(), "/", ui$address)), "Address is not available")
+        validate(
+          need(!is.null(ui$address), "address cannot be NULL"),
+          need(file.exists(paste0(getwd(), "/", ui$address)), "Address is not available")
+        )
         ns <- session$ns
         rv$boxes <- list()
         boxes <- parse_address(address = ui$address,
                                root = getwd())
+        if(length(rv$modules) > 0){
+          lapply(rv$module, FUN = function(x){x$destroy()})
+        }
         
         for(name in names(boxes$db)){
           rv$boxes$db[[name]] <- database_box_UI(id = ns(name),
                                                  ui = boxes$db[[name]]
           )
-          x <- callModule(module = database_box,
-                          id = name,
-                          ui = ui)
+          
+          eval(
+            parse(
+              text = paste0(
+                "rv$modules[[name]] <- callModule(module = database_box,
+                          id = '", name, "',
+                          ui = ui)"
+              )
+            )
+          )
+          
+          # rv$modules[[name]] <- callModule(module = database_box,
+          #                 id = name,
+          #                 ui = ui)
         }
         
         for(name in names(boxes$tbl)){
           rv$boxes$tbl[[name]] <- table_box_UI(id = ns(name),
                                                ui = boxes$tbl[[name]]
           )
-          x <- callModule(module = table_box,
-                          id = name,
-                          ui = ui)
+          eval(
+            parse(
+              text = paste0(
+                "rv$modules[[name]] <- callModule(module = table_box,
+                          id = '", name, "',
+                          ui = ui)"
+              )
+            )
+          )
+          # rv$modules[[name]] <- callModule(module = table_box,
+          #                 id = name,
+          #                 ui = ui)
         }
       })
       

@@ -15,7 +15,5 @@ database_box <- function(input, output, session, id, ui = NULL){
   observeEvent(input$click, {
     address <- session$ns("x") %>% str_split(., pattern = "-", simplify = TRUE) %>% .[,2]
     ui$address <- str_c(ui$address, "/", address)
-    print(ui$address)
-    
   })
 } #function(input, output, session)

@@ -8,6 +8,7 @@ ui <- fluidPage(
   ),
   
   actionButton("browser", "browser"),
+  address_bar_UI("address"),
   dbPanel_UI("db")
 )
 
@@ -16,10 +17,15 @@ server <- function(input, output, session) {
     address = NULL
   )
   ui$address <- "Home"
+  address_bar(id = "address", ui = ui)
   dbPanel("db", ui = ui)
   
   observeEvent(input$browser, {
     browser()
+  })
+  
+  observeEvent(ui$address, {
+    print(ui$address)
   })
 }
 
